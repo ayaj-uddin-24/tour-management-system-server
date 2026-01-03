@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status-codes";
 import { userServices } from "./user.service.js";
 
-const createUser = async (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const user = await userServices.createUser(req.body);
 
@@ -12,9 +12,7 @@ const createUser = async (req: Request, res: Response) => {
       .status(httpStatus.CREATED)
       .json({ success: true, message: "User Created Successfully!", user });
   } catch (error: any) {
-    res
-      .status(httpStatus.BAD_REQUEST)
-      .json({ success: false, message: error.message });
+    next(error);
   }
 };
 
