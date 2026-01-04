@@ -1,12 +1,13 @@
 /* eslint-disable no-console */
 
+import { envVars } from "./app/config/env";
 import mongoose from "mongoose";
 import { Server } from "http";
-import app from "./app.js";
-import { envVars } from "./app/config/env.js";
+import app from "./app";
 
 let server: Server;
 
+// Starting The Server
 const startServer = async () => {
   try {
     await mongoose.connect(envVars.DB_URL);
