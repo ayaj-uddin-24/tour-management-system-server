@@ -1,5 +1,6 @@
 /* eslint-disable no-console */
 
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 import { envVars } from "./app/config/env";
 import mongoose from "mongoose";
 import { Server } from "http";
@@ -21,7 +22,11 @@ const startServer = async () => {
   }
 };
 
-startServer();
+// Run The Server & Super Admin
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
 // Unhandled Rejection Error
 process.on("unhandledRejection", (err) => {
