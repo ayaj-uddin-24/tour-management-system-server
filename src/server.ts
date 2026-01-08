@@ -4,6 +4,7 @@ import { envVars } from "./app/config/env";
 import mongoose from "mongoose";
 import { Server } from "http";
 import app from "./app";
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
@@ -21,7 +22,10 @@ const startServer = async () => {
   }
 };
 
-startServer();
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
 // Unhandled Rejection Error
 process.on("unhandledRejection", (err) => {
