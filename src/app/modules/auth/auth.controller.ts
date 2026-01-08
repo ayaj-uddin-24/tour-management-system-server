@@ -13,7 +13,8 @@ const credentialsLogin = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "User Login Successfully!",
-      data: result,
+      data: result.data,
+      token: result.token,
     });
   }
 );

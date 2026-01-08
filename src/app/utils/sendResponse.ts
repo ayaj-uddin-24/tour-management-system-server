@@ -4,12 +4,18 @@ interface IMeta {
   total: number;
 }
 
+interface IToken {
+  accessToken?: string;
+  refreshToken?: string;
+}
+
 interface IResponse<T> {
   statusCode: number;
   success: boolean;
   message: string;
   data: T;
   meta?: IMeta;
+  token?: IToken;
 }
 
 const sendResponse = <T>(res: Response, data: IResponse<T>) => {
@@ -18,6 +24,7 @@ const sendResponse = <T>(res: Response, data: IResponse<T>) => {
     message: data.message,
     data: data.data,
     meta: data.meta,
+    token: data.token,
   });
 };
 
