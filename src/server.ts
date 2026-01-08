@@ -1,10 +1,10 @@
 /* eslint-disable no-console */
 
+import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 import { envVars } from "./app/config/env";
 import mongoose from "mongoose";
 import { Server } from "http";
 import app from "./app";
-import { seedSuperAdmin } from "./app/utils/seedSuperAdmin";
 
 let server: Server;
 
@@ -22,6 +22,7 @@ const startServer = async () => {
   }
 };
 
+// Run The Server & Super Admin
 (async () => {
   await startServer();
   await seedSuperAdmin();

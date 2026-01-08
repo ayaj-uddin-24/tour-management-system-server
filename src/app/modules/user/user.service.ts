@@ -1,10 +1,10 @@
 import { IAuthProviders, IUser, Role } from "./user.interface";
 import AppError from "../../error/AppError";
+import { envVars } from "../../config/env";
 import httpStatus from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
 import { User } from "./user.model";
 import bcryptjs from "bcryptjs";
-import { JwtPayload } from "jsonwebtoken";
-import { envVars } from "../../config/env";
 
 // Create User Service
 const createUser = async (payload: Partial<IUser>) => {

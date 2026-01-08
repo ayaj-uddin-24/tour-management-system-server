@@ -1,10 +1,10 @@
-import AppError from "../../error/AppError";
-import { IUser } from "../user/user.interface";
-import { User } from "../user/user.model";
-import httpStatus from "http-status-codes";
-import bcryptjs from "bcryptjs";
 import { generateToken } from "../../utils/jwt";
+import { IUser } from "../user/user.interface";
+import AppError from "../../error/AppError";
 import { envVars } from "../../config/env";
+import httpStatus from "http-status-codes";
+import { User } from "../user/user.model";
+import bcryptjs from "bcryptjs";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
