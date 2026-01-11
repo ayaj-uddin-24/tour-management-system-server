@@ -1,9 +1,13 @@
-import { generateToken } from "../../utils/jwt";
-import { IUser } from "../user/user.interface";
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { generateToken, verifyToken } from "../../utils/jwt";
+import { createUserTokens } from "../../utils/userTokens";
+import { IsActive, IUser } from "../user/user.interface";
 import AppError from "../../error/AppError";
-import { envVars } from "../../config/env";
 import httpStatus from "http-status-codes";
+import { envVars } from "../../config/env";
 import { User } from "../user/user.model";
+import { JwtPayload } from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
 const credentialsLogin = async (payload: Partial<IUser>) => {
@@ -24,6 +28,44 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     throw new AppError(httpStatus.BAD_REQUEST, "Incorrect password!");
   }
 
+  const userTokens = createUserTokens(isUserExist);
+
+  const { password: pass, ...rest } = isUserExist.toObject();
+
+  return {
+    data: rest,
+    token: {
+      accessToken: userTokens.accessToken,
+      refreshToken: userTokens.refreshToken,
+    },
+  };
+};
+
+const getNewAccessToken = async (refreshToken: string) => {
+  const verifiedRefreshToken = verifyToken(
+    refreshToken,
+    envVars.JWT_REFRESH_SECRET
+  ) as JwtPayload;
+  const isUserExist = await User.findOne({ email: verifiedRefreshToken.email });
+
+  if (!isUserExist) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User does not exist!");
+  }
+
+  if (
+    isUserExist.isActive === IsActive.BLOCKED ||
+    isUserExist.isActive === IsActive.INACTIVE
+  ) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      `User is ${isUserExist.isActive}`
+    );
+  }
+
+  if (isUserExist.isDeleted) {
+    throw new AppError(httpStatus.BAD_REQUEST, "User is deleted");
+  }
+
   const jwtPayload = {
     userId: isUserExist._id,
     email: isUserExist.email,
@@ -36,10 +78,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
     envVars.JWT_ACCESS_EXPIRES
   );
 
-  return {
-    data: isUserExist,
-    token: { accessToken },
-  };
+  return accessToken;
 };
 
-export const authServices = { credentialsLogin };
+export const authServices = { credentialsLogin, getNewAccessToken };
