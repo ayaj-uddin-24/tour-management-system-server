@@ -7,6 +7,9 @@ import catchAsync from "../../utils/catchAsync";
 import { authServices } from "./auth.service";
 import httpStatus from "http-status-codes";
 import AppError from "../../error/AppError";
+import { JwtPayload } from "jsonwebtoken";
+import { createUserTokens } from "../../utils/userTokens";
+import { envVars } from "../../config/env";
 
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +24,7 @@ const credentialsLogin = catchAsync(
       data: result.data,
       token: result.token,
     });
-  }
+  },
 );
 
 const getNewAccessToken = catchAsync(
@@ -40,7 +43,7 @@ const getNewAccessToken = catchAsync(
       message: "Access Token Created Successfully!",
       data: tokenInfo,
     });
-  }
+  },
 );
 
 const logout = catchAsync(
@@ -63,12 +66,12 @@ const logout = catchAsync(
       message: "User Logged Out Successfully!",
       data: null,
     });
-  }
+  },
 );
 
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const decodedToken = req.user;
+    const decodedToken = req.user as JwtPayload;
     const payload = req.body;
 
     await authServices.resetPassword(decodedToken, payload);
@@ -79,7 +82,23 @@ const resetPassword = catchAsync(
       message: "Password Changed Successfully!",
       data: null,
     });
-  }
+  },
+);
+
+const googleCallBack = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    if (!user) {
+      throw new AppError(httpStatus.NOT_FOUND, "User Not Found");
+    }
+
+    const tokenInfo = createUserTokens(user);
+    setAuthCookie(res, tokenInfo);
+
+    const redirectTo = (req.authInfo as { state?: string })?.state ?? "";
+    const safeRedirect = redirectTo.startsWith("/") ? redirectTo.slice(1) : "";
+    res.redirect(`${envVars.FRONTEND_URL}/${safeRedirect}`);
+  },
 );
 
 export const authController = {
@@ -87,4 +106,5 @@ export const authController = {
   getNewAccessToken,
   logout,
   resetPassword,
+  googleCallBack,
 };

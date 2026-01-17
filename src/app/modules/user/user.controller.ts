@@ -5,6 +5,7 @@ import sendResponse from "../../utils/sendResponse.js";
 import catchAsync from "../../utils/catchAsync.js";
 import { userServices } from "./user.service.js";
 import httpStatus from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
 
 // Create User Controller
 const createUser = catchAsync(
@@ -24,7 +25,7 @@ const createUser = catchAsync(
 const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
-    const user = await userServices.updateUser(userId, req.body, req.user);
+    const user = await userServices.updateUser(userId, req.body, req.user as JwtPayload);
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
