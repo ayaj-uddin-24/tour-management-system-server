@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { generateToken, verifyToken } from "../../utils/jwt";
@@ -81,4 +82,33 @@ const getNewAccessToken = async (refreshToken: string) => {
   return accessToken;
 };
 
-export const authServices = { credentialsLogin, getNewAccessToken };
+const resetPassword = async (
+  decodedToken: JwtPayload,
+  payload: { oldPassword: string; newPassword: string }
+) => {
+  const user = await User.findById(decodedToken.userId);
+  const isPasswordMatch = await bcryptjs.compare(
+    payload.oldPassword,
+    user!.password as string
+  );
+
+  if (isPasswordMatch) {
+    throw new AppError(httpStatus.UNAUTHORIZED, "Old Password Does Not Match!");
+  }
+
+  const hashedPassword = await bcryptjs.hash(
+    payload.newPassword,
+    Number(envVars.BCRYPT_SALT_ROUND)
+  );
+
+  user!.password = hashedPassword;
+  user!.save();
+
+  return;
+};
+
+export const authServices = {
+  credentialsLogin,
+  getNewAccessToken,
+  resetPassword,
+};
