@@ -1,6 +1,6 @@
-import { authRoutes } from "../modules/auth/auth.routes";
 import { divisionRoutes } from "../modules/division/division.routes";
-import { tourTypeRoutes } from "../modules/tour/tour.routes";
+import { authRoutes } from "../modules/auth/auth.routes";
+import { tourRoutes } from "../modules/tour/tour.routes";
 import { userRoutes } from "../modules/user/user.routes";
 import { Router } from "express";
 
@@ -20,8 +20,8 @@ const routeModules = [
     route: divisionRoutes,
   },
   {
-    path: "/tour-type",
-    route: tourTypeRoutes,
+    path: "/tour",
+    route: tourRoutes,
   },
 ];
 
