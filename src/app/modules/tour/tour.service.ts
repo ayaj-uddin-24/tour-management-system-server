@@ -18,22 +18,22 @@ const createTourType = async (payload: Partial<ITourType>) => {
   return tourType;
 };
 
+// Get Tour Type Service
+const getTourTypes = async () => {
+  const tourTypes = await TourType.find();
+  return tourTypes;
+};
+
 // Update Tour Type Service
 const updateTourType = async (id: string, payload: Partial<ITourType>) => {
   const isTourTypeExist = await TourType.findById(id);
-  if (isTourTypeExist) {
+  if (!isTourTypeExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Tour Type Does Not Exists!");
   }
 
   const tourType = await TourType.findByIdAndUpdate(id, payload);
 
   return tourType;
-};
-
-// Get Tour Type Service
-const getTourTypes = async () => {
-  const tourTypes = await TourType.find();
-  return tourTypes;
 };
 
 // Delete Tour Type Service
@@ -105,7 +105,6 @@ export const tourServices = {
   updateTourType,
   getTourTypes,
   deleteTourType,
-
   createTour,
   updateTour,
   getTour,

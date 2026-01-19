@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 import { NextFunction, Request, Response } from "express";
-import catchAsync from "../../utils/catchAsync";
 import { divisionServices } from "./division.service";
 import sendResponse from "../../utils/sendResponse";
+import catchAsync from "../../utils/catchAsync";
 import httpStatus from "http-status-codes";
 
 // Create Division Controller
@@ -20,20 +20,6 @@ const createDivision = catchAsync(
   },
 );
 
-// Update Division Controller
-const updateDivision = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await divisionServices.createDivision(req.body);
-
-    sendResponse(res, {
-      statusCode: httpStatus.CREATED,
-      success: true,
-      message: "Division Updated Successfully!",
-      data: result,
-    });
-  },
-);
-
 // Get Divisions Controller
 const getDivisions = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -43,6 +29,23 @@ const getDivisions = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "Division Retrieved Successfully!",
+      data: result,
+    });
+  },
+);
+
+// Update Division Controller
+const updateDivision = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await divisionServices.updateDivision(
+      req.params.id,
+      req.body,
+    );
+
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Division Updated Successfully!",
       data: result,
     });
   },

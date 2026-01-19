@@ -2,8 +2,8 @@
 
 import { NextFunction, Request, Response } from "express";
 import sendResponse from "../../utils/sendResponse";
-import { tourServices } from "./tour.service";
 import catchAsync from "../../utils/catchAsync";
+import { tourServices } from "./tour.service";
 import httpStatus from "http-status-codes";
 
 /* ==================== Tour Type Controller ==================== */
@@ -21,20 +21,6 @@ const createTourType = catchAsync(
   },
 );
 
-// Update Tour Type Controller
-const updateTourType = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
-    const result = await tourServices.updateTourType(req.params.id, req.body);
-
-    sendResponse(res, {
-      statusCode: httpStatus.CREATED,
-      success: true,
-      message: "Tour Type Updated Successfully!",
-      data: result,
-    });
-  },
-);
-
 // Get Tour Types Controller
 const getTourTypes = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -44,6 +30,20 @@ const getTourTypes = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "Tour Types Retrieved Successfully!",
+      data: result,
+    });
+  },
+);
+
+// Update Tour Type Controller
+const updateTourType = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await tourServices.updateTourType(req.params.id, req.body);
+
+    sendResponse(res, {
+      statusCode: httpStatus.CREATED,
+      success: true,
+      message: "Tour Type Updated Successfully!",
       data: result,
     });
   },
@@ -72,13 +72,13 @@ const createTour = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
-      message: "Tour  Created Successfully!",
+      message: "Tour Created Successfully!",
       data: result,
     });
   },
 );
 
-// Update Tour  Controller
+// Update Tour Controller
 const updateTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const result = await tourServices.updateTourType(req.params.id, req.body);
@@ -86,7 +86,7 @@ const updateTour = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
       success: true,
-      message: "Tour  Updated Successfully!",
+      message: "Tour Updated Successfully!",
       data: result,
     });
   },
@@ -139,7 +139,6 @@ export const tourController = {
   updateTourType,
   getTourTypes,
   deleteTourType,
-
   createTour,
   updateTour,
   getTour,
