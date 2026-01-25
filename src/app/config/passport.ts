@@ -1,9 +1,45 @@
-import passport, { DoneCallback } from "passport";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";
-import { envVars } from "./env";
-import { User } from "../modules/user/user.model.js";
 import { IUser, Role } from "../modules/user/user.interface.js";
+import { Strategy as LocalStrategy } from "passport-local";
+import { User } from "../modules/user/user.model.js";
+import passport, { DoneCallback } from "passport";
+import bcryptjs from "bcryptjs";
+import { envVars } from "./env";
 
+// Custom Login Authentication
+passport.use(
+  new LocalStrategy(
+    {
+      usernameField: "email",
+      passwordField: "password",
+    },
+    async (email, password, done) => {
+      const isUserExist = await User.findOne({ email });
+      if (!isUserExist) return done("User does not exist!");
+
+      const isGoogleAuthenticated = isUserExist.auths?.some(
+        (providerObjects) => providerObjects.provider === "google",
+      );
+
+      if (isGoogleAuthenticated && !isUserExist.password) {
+        return done(
+          "You have authenticated through Google. So if you want to login with credentials, then at first login with google and set a password for your Gmail and then you can login with email and password.",
+        );
+      }
+
+      const matchPassword = await bcryptjs.compare(
+        password as string,
+        isUserExist.password as string,
+      );
+
+      if (!matchPassword) return done("Incorrect password!");
+
+      return done(null, isUserExist, { message: "User login successful!" });
+    },
+  ),
+);
+
+// Google Login Authentication
 passport.use(
   new GoogleStrategy(
     {
