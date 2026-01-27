@@ -9,12 +9,23 @@ export const globalErrorHandler = (
   error: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   let statusCode = 500;
   let message = error.message;
 
-  if (error instanceof AppError) {
+  // Duplicate Error
+  if (error.code === 11000) {
+    const matchedArr = error.message.match(/"([^"]*)"/);
+    statusCode = 401;
+    message = `${matchedArr[1]} is already exist!`;
+  }
+
+  // Mongoose Cast Error
+  else if (error.name === "CastError") {
+    statusCode = 401;
+    message = "Invalid ObjectID. Give a valid ObjectID!";
+  } else if (error instanceof AppError) {
     statusCode = error.statusCode;
     message = error.message;
   } else {
