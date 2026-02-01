@@ -13,6 +13,7 @@ export const globalErrorHandler = (
 ) => {
   let statusCode = 500;
   let message = error.message;
+  const errorSources: any = [];
 
   // Duplicate Error
   if (error.code === 11000) {
@@ -25,6 +26,18 @@ export const globalErrorHandler = (
   else if (error.name === "CastError") {
     statusCode = 401;
     message = "Invalid ObjectID. Give a valid ObjectID!";
+  }
+
+  // Validation Error
+  else if (error.name === "ValidationError") {
+    const errors = Object.values(error.errors);
+    errors.forEach((err: any) =>
+      errorSources.push({
+        error: err.path,
+        message: err.message,
+      }),
+    );
+    message = "Validation Error Occurred!";
   } else if (error instanceof AppError) {
     statusCode = error.statusCode;
     message = error.message;
@@ -37,6 +50,7 @@ export const globalErrorHandler = (
     success: false,
     message: message,
     error,
+    errorSources,
     stack: envVars.NODE_ENV === "development" ? error.stack : null,
   });
 };
