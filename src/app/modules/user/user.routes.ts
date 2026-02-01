@@ -10,18 +10,18 @@ const router = Router();
 router.post(
   "/register",
   validateRequest(createUserZodSchema),
-  userController.createUser
+  userController.createUser,
 );
 router.get(
   "/",
   checkAuth(Role.SUPER_ADMIN, Role.ADMIN),
-  userController.getAllUsers
+  userController.getAllUsers,
 );
 router.patch(
   "/:id",
   validateRequest(updateUserZodSchema),
   checkAuth(...Object.values(Role)),
-  userController.updateUser
+  userController.updateUser,
 );
 
 export const userRoutes = router;

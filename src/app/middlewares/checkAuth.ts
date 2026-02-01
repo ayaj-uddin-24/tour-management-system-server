@@ -1,11 +1,11 @@
+import { IsActive } from "../modules/user/user.interface";
 import { NextFunction, Request, Response } from "express";
+import { User } from "../modules/user/user.model";
 import httpStatus from "http-status-codes";
 import { verifyToken } from "../utils/jwt";
 import { JwtPayload } from "jsonwebtoken";
 import AppError from "../error/AppError";
 import { envVars } from "../config/env";
-import { User } from "../modules/user/user.model";
-import { IsActive } from "../modules/user/user.interface";
 
 export const checkAuth =
   (...authRoles: string[]) =>
@@ -14,7 +14,7 @@ export const checkAuth =
       const accessToken = req.headers.authorization as string;
       const verifiedToken = verifyToken(
         accessToken,
-        envVars.JWT_ACCESS_SECRET
+        envVars.JWT_ACCESS_SECRET,
       ) as JwtPayload;
 
       if (!verifiedToken) {
@@ -35,7 +35,7 @@ export const checkAuth =
       ) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
-          `User is ${isUserExist.isActive}`
+          `User is ${isUserExist.isActive}`,
         );
       }
 
@@ -46,7 +46,7 @@ export const checkAuth =
       if (!authRoles.includes(verifiedToken.role)) {
         throw new AppError(
           httpStatus.BAD_REQUEST,
-          "You are not allowed to view this page!"
+          "You are not allowed to view this page!",
         );
       }
 

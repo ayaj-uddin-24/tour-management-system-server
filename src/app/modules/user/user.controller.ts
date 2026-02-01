@@ -18,14 +18,18 @@ const createUser = catchAsync(
       message: "User Created Successfully!",
       data: user,
     });
-  }
+  },
 );
 
 // Update User Controller
 const updateUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const userId = req.params.id;
-    const user = await userServices.updateUser(userId, req.body, req.user as JwtPayload);
+    const user = await userServices.updateUser(
+      userId,
+      req.body,
+      req.user as JwtPayload,
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,
@@ -33,7 +37,7 @@ const updateUser = catchAsync(
       message: "User Updated Successfully!",
       data: user,
     });
-  }
+  },
 );
 
 // Get All Users Controller
@@ -50,7 +54,7 @@ const getAllUsers = catchAsync(
         total: result.meta,
       },
     });
-  }
+  },
 );
 
 export const userController = { createUser, getAllUsers, updateUser };
