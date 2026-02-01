@@ -1,4 +1,4 @@
-import { updateUserZodSchema } from "./user.validation";
+import { createUserZodSchema, updateUserZodSchema } from "./user.validation";
 import { validateRequest } from "../../middlewares/validateRequest";
 import { checkAuth } from "../../middlewares/checkAuth";
 import { userController } from "./user.controller";
@@ -9,7 +9,7 @@ const router = Router();
 
 router.post(
   "/register",
-  // validateRequest(createUserZodSchema),
+  validateRequest(createUserZodSchema),
   userController.createUser,
 );
 router.get(

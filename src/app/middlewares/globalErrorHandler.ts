@@ -4,6 +4,10 @@
 import { NextFunction, Request, Response } from "express";
 import AppError from "../error/AppError";
 import { envVars } from "../config/env";
+import { duplicateErrorHandler } from "../helpers/duplicateErrorHandler";
+import { castErrorHandler } from "../helpers/castErrorHandler";
+import { ValidationErrorHandler } from "../helpers/validationErrorHandler";
+import { zodErrorHandler } from "../helpers/zodErrorHandler";
 
 export const globalErrorHandler = (
   error: any,
@@ -17,27 +21,30 @@ export const globalErrorHandler = (
 
   // Duplicate Error
   if (error.code === 11000) {
-    const matchedArr = error.message.match(/"([^"]*)"/);
-    statusCode = 401;
-    message = `${matchedArr[1]} is already exist!`;
+    const simplifiedError = duplicateErrorHandler(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
   }
 
   // Mongoose Cast Error
   else if (error.name === "CastError") {
-    statusCode = 401;
-    message = "Invalid ObjectID. Give a valid ObjectID!";
+    const simplifiedError = castErrorHandler();
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
   }
 
-  // Validation Error
+  // Mongoose Validation Error
   else if (error.name === "ValidationError") {
-    const errors = Object.values(error.errors);
-    errors.forEach((err: any) =>
-      errorSources.push({
-        error: err.path,
-        message: err.message,
-      }),
-    );
-    message = "Validation Error Occurred!";
+    const simplifiedError = ValidationErrorHandler(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+  }
+
+  // Zod Error
+  else if (error.name === "ZodError") {
+    const simplifiedError = zodErrorHandler(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
   } else if (error instanceof AppError) {
     statusCode = error.statusCode;
     message = error.message;
@@ -49,8 +56,8 @@ export const globalErrorHandler = (
   res.status(statusCode).json({
     success: false,
     message: message,
-    error,
     errorSources,
+    error: envVars.NODE_ENV === "development" ? error.stack : null,
     stack: envVars.NODE_ENV === "development" ? error.stack : null,
   });
 };
