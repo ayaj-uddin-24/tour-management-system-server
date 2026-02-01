@@ -32,7 +32,7 @@ const startServer = async () => {
 process.on("unhandledRejection", (err) => {
   console.log(
     "Unhandled Rejection Error Detected. Server Shutting Down!!!",
-    err
+    err,
   );
 
   if (server) {
@@ -48,7 +48,7 @@ process.on("unhandledRejection", (err) => {
 process.on("uncaughtException", (err) => {
   console.log(
     "Uncaught Exception Error Detected. Server Shutting Down!!!",
-    err
+    err,
   );
 
   if (server) {
