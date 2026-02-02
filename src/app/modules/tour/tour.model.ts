@@ -43,5 +43,12 @@ const tourSchema = new Schema<ITour>(
   },
 );
 
+// Tour Schema Pre Save Hook
+tourSchema.pre("save", async function () {
+  if (this.isModified("title")) {
+    this.slug = this.title.toLowerCase().split(" ").join("-");
+  }
+});
+
 export const TourType = model<ITourType>("TourType", tourTypeSchema);
 export const Tour = model<ITour>("Tour", tourSchema);

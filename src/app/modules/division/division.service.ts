@@ -5,21 +5,12 @@ import httpStatus from "http-status-codes";
 
 // Create Division Service
 const createDivision = async (payload: Partial<IDivision>) => {
-  const { name, thumbnail, description } = payload;
-
-  const isDivisionExist = await Division.findOne({ name });
+  const isDivisionExist = await Division.findOne({ name: payload.name });
   if (isDivisionExist) {
     throw new AppError(httpStatus.CONFLICT, "Division Already Exists!");
   }
 
-  const baseSlug = name?.toLowerCase().split(" ").join("-");
-  const slug = `${baseSlug}-division`;
-  const division = await Division.create({
-    name,
-    slug,
-    thumbnail,
-    description,
-  });
+  const division = await Division.create(payload);
 
   return division;
 };

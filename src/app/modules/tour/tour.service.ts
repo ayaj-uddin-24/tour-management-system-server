@@ -54,17 +54,12 @@ const deleteTourType = async (id: string) => {
 /* ==================== Tour Services ==================== */
 // Create Tour Service
 const createTour = async (payload: Partial<ITour>) => {
-  const { title, ...rest } = payload;
-
-  const slug = title?.toLowerCase().split(" ").join("-");
-  payload.slug = slug;
-
-  const isTourExist = await Tour.findOne({ slug });
+  const isTourExist = await Tour.findOne({ title: payload.title });
   if (isTourExist) {
     throw new AppError(httpStatus.CONFLICT, "Tour Already Exists!");
   }
 
-  const tour = await Tour.create({ title, slug, ...rest });
+  const tour = await Tour.create(payload);
 
   return tour;
 };
