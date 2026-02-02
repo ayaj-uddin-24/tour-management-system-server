@@ -30,7 +30,8 @@ const getTourTypes = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "Tour Types Retrieved Successfully!",
-      data: result,
+      data: result.data,
+      meta: result.meta,
     });
   },
 );
@@ -87,7 +88,7 @@ const updateTour = catchAsync(
       statusCode: httpStatus.CREATED,
       success: true,
       message: "Tour Updated Successfully!",
-      data: result,
+      data: result
     });
   },
 );
@@ -101,7 +102,8 @@ const getTour = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: "Tour Retrieved Successfully!",
-      data: result,
+      data: result.data,
+      meta: result.meta,
     });
   },
 );

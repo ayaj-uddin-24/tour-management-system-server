@@ -23,7 +23,7 @@ router.patch(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   divisionController.updateDivision,
 );
-router.get("/:id", divisionController.getDivisionById);
+router.get("/:slug", divisionController.getSingleDivision);
 router.delete(
   "/",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),

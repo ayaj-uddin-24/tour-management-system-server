@@ -5,13 +5,15 @@ import httpStatus from "http-status-codes";
 
 // Create Division Service
 const createDivision = async (payload: Partial<IDivision>) => {
-  const { name, slug, thumbnail, description } = payload;
+  const { name, thumbnail, description } = payload;
 
   const isDivisionExist = await Division.findOne({ name });
   if (isDivisionExist) {
     throw new AppError(httpStatus.CONFLICT, "Division Already Exists!");
   }
 
+  const baseSlug = name?.toLowerCase().split(" ").join("-");
+  const slug = `${baseSlug}-division`;
   const division = await Division.create({
     name,
     slug,
@@ -24,32 +26,50 @@ const createDivision = async (payload: Partial<IDivision>) => {
 
 // Get Divisions Service
 const getDivisions = async () => {
-  const divisions = await Division.find();
-  return divisions;
+  const divisions = await Division.find({});
+  const totalDivisions = await Division.countDocuments();
+
+  return {
+    data: divisions,
+    meta: {
+      total: totalDivisions,
+    },
+  };
 };
 
 // Update Division Service
 const updateDivision = async (id: string, payload: Partial<IDivision>) => {
-  const { name, slug, thumbnail, description } = payload;
-
   const isDivisionExist = await Division.findById(id);
   if (!isDivisionExist) {
     throw new AppError(httpStatus.NOT_FOUND, "Division Does Not Exist!");
   }
 
-  const division = await Division.findByIdAndUpdate(id, {
-    name,
-    slug,
-    thumbnail,
-    description,
+  const duplicateDivision = await Division.findOne({
+    name: payload.name,
+    _id: { $ne: id },
+  });
+
+  if (duplicateDivision) {
+    throw new AppError(
+      httpStatus.CONFLICT,
+      "A division with this name already exists.",
+    );
+  }
+
+  const baseSlug = payload.name?.toLowerCase().split(" ").join("-");
+  payload.slug = `${baseSlug}-division`;
+
+  const division = await Division.findByIdAndUpdate(id, payload, {
+    new: true,
+    runValidators: true,
   });
 
   return division;
 };
 
-// Get Division By ID Service
-const getDivisionById = async (id: string) => {
-  const division = await Division.findById(id);
+// Get Single Division Service
+const getSingleDivision = async (slug: string) => {
+  const division = await Division.findOne({ slug });
   return division;
 };
 
@@ -68,6 +88,6 @@ export const divisionServices = {
   createDivision,
   updateDivision,
   getDivisions,
-  getDivisionById,
+  getSingleDivision,
   deleteDivision,
 };

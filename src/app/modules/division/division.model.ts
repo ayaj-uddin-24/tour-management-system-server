@@ -3,8 +3,8 @@ import { model, Schema } from "mongoose";
 
 const divisionSchema = new Schema<IDivision>(
   {
-    name: { type: String, required: true },
-    slug: { type: String, unique: true, required: true },
+    name: { type: String, required: true, unique: true },
+    slug: { type: String, unique: true },
     thumbnail: { type: String },
     description: { type: String },
   },
