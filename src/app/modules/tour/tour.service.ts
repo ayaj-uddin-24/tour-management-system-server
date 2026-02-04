@@ -2,6 +2,7 @@ import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import AppError from "../../error/AppError";
 import httpStatus from "http-status-codes";
+import { tourSearchableFields } from "./tour.constant";
 
 /* ==================== Tour Type Services ==================== */
 // Create Tour Type Service
@@ -77,10 +78,18 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 };
 
 // Get Tours Service
-const getTour = async () => {
-  const tour = await Tour.find({})
-    .populate("tourType", "name")
-    .populate("division", { name: 1, description: 1 });
+const getTour = async (query: Record<string, string>) => {
+  const filter = query;
+  const searchTerm = query.searchTerm || "";
+  delete filter["SearchTerm"];
+
+  const searchQuery = {
+    $or: tourSearchableFields.map((field) => ({
+      [field]: { $regex: searchTerm, $options: "i" },
+    })),
+  };
+
+  const tour = await Tour.find(searchQuery).find(filter);
   const totalTours = await Tour.countDocuments();
   return {
     data: tour,

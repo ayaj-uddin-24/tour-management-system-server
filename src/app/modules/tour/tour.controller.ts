@@ -88,7 +88,7 @@ const updateTour = catchAsync(
       statusCode: httpStatus.CREATED,
       success: true,
       message: "Tour Updated Successfully!",
-      data: result
+      data: result,
     });
   },
 );
@@ -96,7 +96,9 @@ const updateTour = catchAsync(
 // Get Tour Controller
 const getTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await tourServices.getTour();
+    const result = await tourServices.getTour(
+      req.query as Record<string, string>,
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
