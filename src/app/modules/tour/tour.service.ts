@@ -2,6 +2,7 @@ import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import AppError from "../../error/AppError";
 import httpStatus from "http-status-codes";
+import { QueryBuilder } from "../../utils/QueryBuilder";
 import { tourSearchableFields } from "./tour.constant";
 
 /* ==================== Tour Type Services ==================== */
@@ -24,7 +25,7 @@ const getTourTypes = async () => {
   return {
     data: tourTypes,
     meta: {
-      total: totalTourTypes,
+      totalData: totalTourTypes,
     },
   };
 };
@@ -79,23 +80,20 @@ const updateTour = async (id: string, payload: Partial<ITour>) => {
 
 // Get Tours Service
 const getTour = async (query: Record<string, string>) => {
-  const filter = query;
-  const searchTerm = query.searchTerm || "";
-  delete filter["SearchTerm"];
+  const queryBuilder = new QueryBuilder(Tour.find(), query);
+  const tour = await queryBuilder
+    .filter()
+    .search(tourSearchableFields)
+    .sort()
+    .fields()
+    .paginate()
+    .build();
 
-  const searchQuery = {
-    $or: tourSearchableFields.map((field) => ({
-      [field]: { $regex: searchTerm, $options: "i" },
-    })),
-  };
+  const meta = await queryBuilder.getMeta();
 
-  const tour = await Tour.find(searchQuery).find(filter);
-  const totalTours = await Tour.countDocuments();
   return {
     data: tour,
-    meta: {
-      total: totalTours,
-    },
+    meta,
   };
 };
 

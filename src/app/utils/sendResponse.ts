@@ -1,7 +1,10 @@
 import { Response } from "express";
 
 interface IMeta {
-  total: number;
+  currentPage?: number;
+  currentData?: number;
+  totalPaged?: number;
+  totalData?: number;
 }
 
 interface IToken {
