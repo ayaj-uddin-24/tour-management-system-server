@@ -11,11 +11,14 @@ export const updateTourTypeZodSchema = z.object({
 export const createTourZodSchema = z.object({
   title: z.string(),
   description: z.string().optional(),
+  images: z.array(z.string()).optional(),
+  departureLocation: z.string().optional(),
+  arrivalLocation: z.string().optional(),
   location: z.string().optional(),
   costFrom: z.number().optional(),
   startDate: z.string().optional().optional(),
   endDate: z.string().optional().optional(),
-  tourType: z.string(), // <- changed here
+  tourType: z.string(),
   included: z.array(z.string()).optional(),
   excluded: z.array(z.string()).optional(),
   amenities: z.array(z.string()).optional(),
@@ -28,11 +31,14 @@ export const createTourZodSchema = z.object({
 export const updateTourZodSchema = z.object({
   title: z.string().optional(),
   description: z.string().optional(),
+  images: z.array(z.string()).optional(),
+  departureLocation: z.string().optional(),
+  arrivalLocation: z.string().optional(),
   location: z.string().optional(),
   costFrom: z.number().optional(),
   startDate: z.string().optional().optional(),
   endDate: z.string().optional().optional(),
-  tourType: z.string().optional(), // <- changed here
+  tourType: z.string().optional(),
   included: z.array(z.string()).optional(),
   excluded: z.array(z.string()).optional(),
   amenities: z.array(z.string()).optional(),

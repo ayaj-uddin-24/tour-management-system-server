@@ -13,6 +13,7 @@ import { envVars } from "../../config/env";
 import { JwtPayload } from "jsonwebtoken";
 import passport from "passport";
 
+// Credentials Login Controller
 const credentialsLogin = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     passport.authenticate("local", async (err: any, user: any, info: any) => {
@@ -40,6 +41,7 @@ const credentialsLogin = catchAsync(
   },
 );
 
+// Get New Access Token Controller
 const getNewAccessToken = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const refreshToken = req.cookies.refreshToken;
@@ -59,6 +61,7 @@ const getNewAccessToken = catchAsync(
   },
 );
 
+// Logout Controller
 const logout = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     res.clearCookie("accessToken", {
@@ -82,6 +85,7 @@ const logout = catchAsync(
   },
 );
 
+// Reset Password Controller
 const resetPassword = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const decodedToken = req.user as JwtPayload;
@@ -98,6 +102,7 @@ const resetPassword = catchAsync(
   },
 );
 
+// Google OAuth Callback Controller
 const googleCallBack = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const user = req.user;

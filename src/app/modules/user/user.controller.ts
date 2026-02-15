@@ -51,7 +51,7 @@ const getAllUsers = catchAsync(
       message: "Users Retrieved Created Successfully!",
       data: result.data,
       meta: {
-        total: result.meta,
+        totalData: result.meta,
       },
     });
   },
