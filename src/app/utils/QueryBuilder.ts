@@ -1,5 +1,5 @@
-import { Query } from "mongoose";
 import { excludeFields } from "../constant";
+import { Query } from "mongoose";
 
 export class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;

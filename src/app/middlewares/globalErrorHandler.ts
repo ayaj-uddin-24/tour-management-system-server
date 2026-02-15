@@ -5,10 +5,10 @@ import { ValidationErrorHandler } from "../helpers/validationErrorHandler";
 import { duplicateErrorHandler } from "../helpers/duplicateErrorHandler";
 import { castErrorHandler } from "../helpers/castErrorHandler";
 import { zodErrorHandler } from "../helpers/zodErrorHandler";
+import { IErrorSources } from "../interfaces/error.types";
 import { NextFunction, Request, Response } from "express";
 import AppError from "../error/AppError";
 import { envVars } from "../config/env";
-import { IErrorSources } from "../interfaces/error.types";
 
 export const globalErrorHandler = (
   error: any,

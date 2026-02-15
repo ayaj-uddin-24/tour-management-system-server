@@ -1,9 +1,9 @@
+import { QueryBuilder } from "../../utils/QueryBuilder";
+import { tourSearchableFields } from "./tour.constant";
 import { ITour, ITourType } from "./tour.interface";
 import { Tour, TourType } from "./tour.model";
 import AppError from "../../error/AppError";
 import httpStatus from "http-status-codes";
-import { QueryBuilder } from "../../utils/QueryBuilder";
-import { tourSearchableFields } from "./tour.constant";
 
 /* ==================== Tour Type Services ==================== */
 // Create Tour Type Service
@@ -97,9 +97,9 @@ const getTour = async (query: Record<string, string>) => {
   };
 };
 
-// Get Tour By ID Service
-const getTourByID = async (id: string) => {
-  const tour = await Tour.findById(id)
+// Get Tour By Slug Service
+const getSingleTour = async (slug: string) => {
+  const tour = await Tour.findOne({ slug })
     .populate("tourType")
     .populate("division");
   if (!tour) {
@@ -127,6 +127,6 @@ export const tourServices = {
   createTour,
   updateTour,
   getTour,
-  getTourByID,
+  getSingleTour,
   deleteTour,
 };

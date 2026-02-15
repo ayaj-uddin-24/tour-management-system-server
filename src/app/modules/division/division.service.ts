@@ -23,7 +23,7 @@ const getDivisions = async () => {
   return {
     data: divisions,
     meta: {
-      total: totalDivisions,
+      totalData: totalDivisions,
     },
   };
 };

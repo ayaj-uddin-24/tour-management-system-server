@@ -110,10 +110,10 @@ const getTour = catchAsync(
   },
 );
 
-// Get Tour By ID Controller
-const getTourByID = catchAsync(
+// Get Tour By Slug Controller
+const getSingleTour = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await tourServices.getTourByID(req.params.id);
+    const result = await tourServices.getSingleTour(req.params.slug);
 
     sendResponse(res, {
       statusCode: httpStatus.OK,
@@ -146,6 +146,6 @@ export const tourController = {
   createTour,
   updateTour,
   getTour,
-  getTourByID,
+  getSingleTour,
   deleteTour,
 };

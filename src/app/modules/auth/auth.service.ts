@@ -11,6 +11,7 @@ import { User } from "../user/user.model";
 import { JwtPayload } from "jsonwebtoken";
 import bcryptjs from "bcryptjs";
 
+// Credentials Login Service
 const credentialsLogin = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
 
@@ -22,7 +23,7 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
 
   const matchPassword = await bcryptjs.compare(
     password as string,
-    isUserExist.password as string
+    isUserExist.password as string,
   );
 
   if (!matchPassword) {
@@ -42,10 +43,11 @@ const credentialsLogin = async (payload: Partial<IUser>) => {
   };
 };
 
+// Get New Access Token Service
 const getNewAccessToken = async (refreshToken: string) => {
   const verifiedRefreshToken = verifyToken(
     refreshToken,
-    envVars.JWT_REFRESH_SECRET
+    envVars.JWT_REFRESH_SECRET,
   ) as JwtPayload;
   const isUserExist = await User.findOne({ email: verifiedRefreshToken.email });
 
@@ -59,7 +61,7 @@ const getNewAccessToken = async (refreshToken: string) => {
   ) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
-      `User is ${isUserExist.isActive}`
+      `User is ${isUserExist.isActive}`,
     );
   }
 
@@ -76,20 +78,21 @@ const getNewAccessToken = async (refreshToken: string) => {
   const accessToken = generateToken(
     jwtPayload,
     envVars.JWT_ACCESS_SECRET,
-    envVars.JWT_ACCESS_EXPIRES
+    envVars.JWT_ACCESS_EXPIRES,
   );
 
   return accessToken;
 };
 
+// Reset Password Service
 const resetPassword = async (
   decodedToken: JwtPayload,
-  payload: { oldPassword: string; newPassword: string }
+  payload: { oldPassword: string; newPassword: string },
 ) => {
   const user = await User.findById(decodedToken.userId);
   const isPasswordMatch = await bcryptjs.compare(
     payload.oldPassword,
-    user!.password as string
+    user!.password as string,
   );
 
   if (isPasswordMatch) {
@@ -98,7 +101,7 @@ const resetPassword = async (
 
   const hashedPassword = await bcryptjs.hash(
     payload.newPassword,
-    Number(envVars.BCRYPT_SALT_ROUND)
+    Number(envVars.BCRYPT_SALT_ROUND),
   );
 
   user!.password = hashedPassword;

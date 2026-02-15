@@ -46,7 +46,7 @@ router.patch(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   tourController.updateTour,
 );
-router.get("/:id", tourController.getTourByID);
+router.get("/:slug", tourController.getSingleTour);
 router.delete(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
