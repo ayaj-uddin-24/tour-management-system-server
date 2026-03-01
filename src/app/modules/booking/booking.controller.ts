@@ -5,11 +5,16 @@ import sendResponse from "../../utils/sendResponse";
 import { BookingServices } from "./booking.service";
 import catchAsync from "../../utils/catchAsync";
 import httpStatus from "http-status-codes";
+import { JwtPayload } from "jsonwebtoken";
 
 // Create Booking Controller
 const createBooking = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const result = await BookingServices.createBooking(req.body);
+    const decodedToken = req.user as JwtPayload;
+    const result = await BookingServices.createBooking(
+      req.body,
+      decodedToken.userId,
+    );
 
     sendResponse(res, {
       statusCode: httpStatus.CREATED,

@@ -5,7 +5,11 @@ import { Router } from "express";
 
 const router = Router();
 
-router.post("/", BookingController.createBooking);
+router.post(
+  "/",
+  checkAuth(...Object.values(Role)),
+  BookingController.createBooking,
+);
 router.get(
   "/",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
